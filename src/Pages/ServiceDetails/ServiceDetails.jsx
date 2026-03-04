@@ -147,31 +147,39 @@ export default function ServiceDetails() {
       )}
 
       {/* Features Section */}
-      {service.features && service.features.length > 0 && (
-        <section className={styles.altSection}>
-          <div className="container py-5">
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>
-                {isRTL ? "مميزات الخدمة" : "Service Features"}
-              </h2>
-            </div>
+      {(() => {
+        const features = service.features?.[i18n.language] || (Array.isArray(service.features) ? service.features : []);
+        if (!features || features.length === 0) return null;
 
-            <div className={styles.cardsGrid}>
-              {service.features.map((feature, index) => (
-                <div key={index} className={styles.infoCard}>
-                  <div className={styles.cardTop}>
-                    <Icon className={styles.cardIcon} />
-                    <div className={styles.cardLine} />
+        return (
+          <section className={styles.altSection}>
+            <div className="container py-5">
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>
+                  {isRTL ? "وش تستفيد من الخدمة؟" : "How do you benefit from the service?"}
+                </h2>
+                <p className={styles.sectionSubtitle}>
+                  {isRTL ? "مخرجات واضحة وتسليم منظم وتجربة استخدام فورية." : "Clear outputs, organized delivery and immediate user experience."}
+                </p>
+              </div>
+
+              <div className={styles.cardsGrid}>
+                {features.map((feature, index) => (
+                  <div key={index} className={styles.infoCard}>
+                    <div className={styles.cardTop}>
+                      <Icon className={styles.cardIcon} />
+                      <div className={styles.cardLine} />
+                    </div>
+                    <div className={styles.cardBody}>
+                      {typeof feature === 'string' ? feature : (feature?.[i18n.language] || feature)}
+                    </div>
                   </div>
-                  <div className={styles.cardBody}>
-                    {typeof feature === 'string' ? feature : (feature?.[i18n.language] || feature)}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       <section className="container py-5">
         <div className={styles.cta}>
