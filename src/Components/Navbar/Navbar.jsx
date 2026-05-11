@@ -183,9 +183,9 @@ function Navbar() {
                 </li>
               </ul>
             </div>
-            {/* <button className={`btn btn-primary ${styles.bookBtn}`}>
-              {t("nav.bookAppointment")}
-            </button> */}
+            <Link to="/start-project" className={`btn btn-primary ${styles.bookBtn}`}>
+              {t("nav.startProject")}
+            </Link>
           </div>
         </div>
       </div>

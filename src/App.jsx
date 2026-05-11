@@ -5,6 +5,7 @@ import Home from './Pages/Home/Home'
 import About from './Pages/About/About'
 import ContactUs from './Pages/ContactUs/ContactUs'
 import ServiceDetails from './Pages/ServiceDetails/ServiceDetails'
+import StartProject from './Pages/StartProject/StartProject'
 import ScrollToTop from './Components/ScrollToTop/ScrollToTop'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<ContactUs />} />
           <Route path="services/:serviceKey" element={<ServiceDetails />} />
+          <Route path="start-project" element={<StartProject />} />
         </Route>
       </Routes>
     </>

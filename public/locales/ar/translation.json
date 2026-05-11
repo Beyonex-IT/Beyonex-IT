@@ -9,7 +9,8 @@
     "home": "الرئيسية",
     "about": "من نحن",
     "contact": "اتصل بنا",
-    "bookAppointment": "احجز موعد"
+    "bookAppointment": "احجز موعد",
+    "startProject": "ابدأ مشروعك"
   },
   "hero": {
     "title": "بيونكس IT",
@@ -229,6 +230,26 @@
       "about": "من نحن",
       "services": "الخدمات",
       "contact": "اتصل بنا"
+    }
+  },
+  "startProjectPage": {
+    "title": "ابدأ مشروعك",
+    "subtitle": "املأ النموذج أدناه وسنتواصل معك لمناقشة مشروعك وتحويل أفكارك إلى واقع.",
+    "form": {
+      "company": "الشركة",
+      "branch": "الفرع",
+      "name": "الاسم الكامل",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "whatsapp": "واتساب",
+      "idNumber": "رقم الهوية",
+      "clientType": "نوع العميل",
+      "individual": "فرد",
+      "corporate": "شركة",
+      "address": "العنوان",
+      "submit": "إرسال الطلب",
+      "successTitle": "تم استلام طلبك!",
+      "successMessage": "شكراً لاهتمامك. سيقوم فريقنا بمراجعة طلبك والتواصل معك قريباً."
     }
   }
 }

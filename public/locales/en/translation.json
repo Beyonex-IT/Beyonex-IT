@@ -9,7 +9,8 @@
     "home": "Home",
     "about": "About Us",
     "contact": "Contact Us",
-    "bookAppointment": "Book Appointment"
+    "bookAppointment": "Book Appointment",
+    "startProject": "Start Your Project"
   },
   "hero": {
     "title": "BEYONEX IT",
@@ -229,6 +230,26 @@
       "about": "About Us",
       "services": "Services",
       "contact": "Contact Us"
+    }
+  },
+  "startProjectPage": {
+    "title": "Start Your Project",
+    "subtitle": "Fill out the form below and we'll get back to you to discuss your project and turn your ideas into reality.",
+    "form": {
+      "company": "Company",
+      "branch": "Branch",
+      "name": "Full Name",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "whatsapp": "WhatsApp",
+      "idNumber": "ID Number",
+      "clientType": "Client Type",
+      "individual": "Individual",
+      "corporate": "Corporate",
+      "address": "Address",
+      "submit": "Submit Request",
+      "successTitle": "Request Received!",
+      "successMessage": "Thank you for your interest. Our team will review your request and get back to you soon."
     }
   }
 }
