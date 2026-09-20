@@ -4,42 +4,79 @@
   scroll-margin-top: 5rem;
 }
 
-.header {
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  max-width: var(--content-header);
+  max-width: 46rem;
   margin-inline: auto;
-  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: clamp(2.6rem, 5vw, 3.75rem);
+  padding-inline: 0.4rem;
   opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
+  transform: translateY(18px);
 }
 
-.header.visible {
+.introIn {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.title {
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.05rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-400) !important;
+}
+
+.kickerLine {
+  display: block;
+  width: 1.85rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+[dir="rtl"] .kicker {
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+
+.headline {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3.15rem);
+  max-width: 18em;
+  font-size: clamp(1.4rem, 3.2vw, 2.15rem) !important;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
-  color: var(--color-section-title);
+  letter-spacing: -0.04em;
+  line-height: 1.22 !important;
+  text-wrap: balance;
+  color: var(--color-section-title) !important;
 }
 
-.subtitle {
-  margin: 0;
-  font-size: clamp(1rem, 2vw, 1.12rem);
-  font-weight: 600;
-  color: var(--color-text-subtitle);
-  line-height: 1.65;
+.accent {
+  width: 2.75rem;
+  height: 3px;
+  margin-top: 1.15rem;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand-200), var(--brand-400));
 }
 
-.description {
-  margin: 0;
+.lede {
+  margin: 1.2rem 0 0;
+  max-width: 38rem;
+  font-size: 1.02rem !important;
+  font-weight: 400;
+  line-height: 1.9 !important;
+  text-wrap: pretty;
+  color: var(--color-text-muted) !important;
 }
 
 .stepsTrack {
@@ -305,7 +342,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header,
+  .intro,
   .stepCard {
     animation: none;
     opacity: 1;
@@ -315,6 +352,18 @@
 }
 
 /* ── Dark mode — professional process cards ── */
+:global([data-theme="dark"]) .kicker {
+  color: var(--brand-200) !important;
+}
+
+:global([data-theme="dark"]) .headline {
+  color: var(--brand-50) !important;
+}
+
+:global([data-theme="dark"]) .lede {
+  color: #c5d6e4 !important;
+}
+
 :global([data-theme="dark"]) .stepCard {
   background: linear-gradient(165deg, #10406a 0%, #0e3758 48%, #0c314f 100%);
   border-color: rgba(var(--color-white-rgb), 0.12);

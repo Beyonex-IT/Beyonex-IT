@@ -1,59 +1,71 @@
-import { useEffect } from 'react'
-import { colors } from "../../Styles/colors";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styles from "./ServiceDetails.module.css";
-import { useGetServiceDetailsQuery } from "../../redux/api/servicesApi";
+import { useGetServiceOfferingQuery } from "../../redux/api/servicesApi";
 import { STATIC_QUERY_OPTIONS } from "../../redux/liveQueryOptions";
 import { useLocale } from "../../hooks/useLocale";
 import { usePageTitle } from "../../hooks/usePageTitle";
-import { getLocalizedOrRaw } from "../../utils/i18nHelpers";
-import { getServiceIconSource, resolveServiceIconName } from "../../utils/resolveServiceIcon";
-import Icon from '../../Components/Common/Icon.jsx';
-import AppLoader from '../../Components/Layout/AppLoader/AppLoader';
+import { getLocalized, getLocalizedOrRaw } from "../../utils/i18nHelpers";
+import {
+  normalizeCatalogItem,
+  pickLocalizedList,
+} from "../../utils/serviceCatalog";
+import { getServiceItem } from "../../content/servicesMenu";
+import { CATEGORY_PROCESS, getServicePage } from "../../content/servicePages";
+import ServiceRemoteIcon from "../../Components/Common/ServiceRemoteIcon.jsx";
+import Icon from "../../Components/Common/Icon.jsx";
+import AppLoader from "../../Components/Layout/AppLoader/AppLoader";
 
 export default function ServiceDetails() {
   const { serviceKey } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useTranslation();
   const { lang, isRTL } = useLocale();
 
-  const { data: serviceResponse, isLoading, isError } = useGetServiceDetailsQuery({
-    slug: serviceKey,
-    lang,
-  }, STATIC_QUERY_OPTIONS);
+  const {
+    data: offeringResponse,
+    isLoading,
+    isFetching,
+  } = useGetServiceOfferingQuery(
+    { slug: serviceKey, lang },
+    STATIC_QUERY_OPTIONS,
+  );
 
-  const service = serviceResponse?.data;
-  const pageTitle = service
-    ? getLocalizedOrRaw(service.title, lang)
-    : t('nav.services');
-  usePageTitle(pageTitle);
+  const apiService = offeringResponse?.data || null;
+  const localResolved = getServiceItem(serviceKey);
+  const localPage = getServicePage(serviceKey);
+  const hasLocal = Boolean(localResolved && localPage);
+  const useApi = Boolean(apiService);
+
+  const title = useApi
+    ? getLocalizedOrRaw(apiService.title, lang)
+    : hasLocal
+      ? getLocalized(localResolved.item.title, lang)
+      : t("nav.services");
+
+  usePageTitle(title);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [serviceKey]);
 
-  if (isLoading) {
+  if (!useApi && (isLoading || isFetching)) {
     return <AppLoader />;
   }
 
-  if (isError || !service) {
+  if (!useApi && !hasLocal) {
     return (
       <div className={`container ${styles.notFoundWrap}`}>
         <div className={styles.notFoundCard}>
-          <h2>{isRTL ? "الخدمة غير موجودة" : "Service not found"}</h2>
-          <p>
-            {isRTL
-              ? "الرابط غير صحيح أو الخدمة اتغيّرت."
-              : "This link is invalid or the service has changed."}
-          </p>
+          <h2>{t("services.details.notFoundTitle")}</h2>
+          <p>{t("services.details.notFoundText")}</p>
           <div className={styles.notFoundActions}>
             <button type="button" className={styles.primaryButton} onClick={() => navigate(-1)}>
-              {isRTL ? "رجوع" : "Go back"}
+              {t("services.details.goBack")}
             </button>
             <Link className={styles.secondaryButton} to="/services">
-              {isRTL ? "كل الخدمات" : "All services"}
+              {t("services.details.allServices")}
             </Link>
           </div>
         </div>
@@ -61,101 +73,173 @@ export default function ServiceDetails() {
     );
   }
 
-  const serviceIconName = resolveServiceIconName(getServiceIconSource(service));
-  const accentColor = location.state?.color || service.color || colors.primary;
-  const title = getLocalizedOrRaw(service.title, lang);
-  const shortDescription = getLocalizedOrRaw(service.short_description, lang);
-  const longDescription = getLocalizedOrRaw(service.long_description, lang);
-  const features = service.features?.[lang] || (Array.isArray(service.features) ? service.features : []);
-  const technologies = service.technologies || [];
-  const hasOverview = Boolean(longDescription);
-  const hasFeatures = features.length > 0;
-  const hasTechnologies = technologies.length > 0;
+  const categoryTitle = useApi
+    ? getLocalizedOrRaw(apiService.category?.short_title, lang) ||
+      getLocalizedOrRaw(apiService.category?.title, lang)
+    : getLocalized(localResolved.category.shortTitle, lang) ||
+      getLocalized(localResolved.category.title, lang);
 
-  const processSteps = isRTL
-    ? [
-        { num: "01", title: "تحليل الاحتياج", desc: "فهم الأهداف والمتطلبات بدقة" },
-        { num: "02", title: "تصميم الحل", desc: "هيكلة تقنية وتجربة استخدام واضحة" },
-        { num: "03", title: "تطوير وتنفيذ", desc: "بناء منظم بجودة قابلة للتوسع" },
-        { num: "04", title: "إطلاق ومتابعة", desc: "تسليم آمن ودعم بعد الإطلاق" },
-      ]
-    : [
-        { num: "01", title: "Discovery", desc: "Clarify goals and technical requirements" },
-        { num: "02", title: "Solution design", desc: "Architecture and UX mapped to outcomes" },
-        { num: "03", title: "Build & deliver", desc: "Structured development with quality gates" },
-        { num: "04", title: "Launch & support", desc: "Safe release with post-launch support" },
-      ];
+  const categoryPath = useApi
+    ? apiService.category?.slug
+      ? `/services/${apiService.category.slug}`
+      : "/services"
+    : `/services/${localResolved.category.id}`;
+
+  const lede = useApi
+    ? getLocalizedOrRaw(apiService.lede, lang) ||
+      getLocalizedOrRaw(apiService.short_description, lang)
+    : getLocalized(localPage.lede, lang) ||
+      getLocalized(localResolved.item.description, lang);
+
+  const overview = useApi
+    ? pickLocalizedList(apiService.overview, lang)
+    : pickLocalizedList(localPage.overview, lang);
+
+  const scope = useApi
+    ? pickLocalizedList(apiService.scope, lang)
+    : pickLocalizedList(localPage.scope, lang);
+
+  const outcomes = useApi
+    ? pickLocalizedList(apiService.outcomes, lang)
+    : pickLocalizedList(localPage.outcomes, lang);
+
+  const signals = useApi
+    ? pickLocalizedList(apiService.signals, lang)
+    : pickLocalizedList(localPage.signals, lang);
+
+  const processSource = useApi
+    ? apiService.process_steps
+    : CATEGORY_PROCESS[localResolved.category.id];
+
+  const processSteps = Array.isArray(processSource) && processSource.length > 0
+    ? [...processSource]
+        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+        .map((step, index) => ({
+          num: String(index + 1).padStart(2, "0"),
+          title: getLocalized(step.title, lang),
+          desc: getLocalized(step.description || step.desc, lang),
+        }))
+    : (isRTL
+        ? [
+            { num: "01", title: "تحليل الاحتياج", desc: "فهم الأهداف والمتطلبات بدقة" },
+            { num: "02", title: "تصميم الحل", desc: "هيكلة تقنية وتجربة استخدام واضحة" },
+            { num: "03", title: "تطوير وتنفيذ", desc: "بناء منظم بجودة قابلة للتوسع" },
+            { num: "04", title: "إطلاق ومتابعة", desc: "تسليم آمن ودعم بعد الإطلاق" },
+          ]
+        : [
+            { num: "01", title: "Discovery", desc: "Clarify goals and technical requirements" },
+            { num: "02", title: "Solution design", desc: "Architecture and UX mapped to outcomes" },
+            { num: "03", title: "Build & deliver", desc: "Structured development with quality gates" },
+            { num: "04", title: "Launch & support", desc: "Safe release with post-launch support" },
+          ]);
+
+  const related = useApi
+    ? (apiService.related || []).map(normalizeCatalogItem)
+    : localResolved.category.items
+        .filter((entry) => entry.id !== localResolved.item.id)
+        .slice(0, 4)
+        .map((entry) =>
+          normalizeCatalogItem({
+            slug: entry.id,
+            title: entry.title,
+            short_description: entry.description,
+          }),
+        );
+
+  const iconSlug = useApi ? apiService.slug : localResolved.item.id;
+  const iconSvg = useApi ? apiService.icon_svg : null;
+  const iconUrl = useApi ? apiService.icon_url : null;
+
+  const hasOverview = overview.length > 0;
+  const hasScope = scope.length > 0;
+  const hasOutcomes = outcomes.length > 0;
+
+  let sectionIndex = 0;
+  const nextIndex = () => {
+    sectionIndex += 1;
+    return String(sectionIndex).padStart(2, "0");
+  };
 
   return (
-    <main
-      className={styles.page}
-      dir={isRTL ? "rtl" : "ltr"}
-      style={{ "--accent": accentColor }}
-    >
+    <main className={styles.page} dir={isRTL ? "rtl" : "ltr"}>
       <section className={styles.hero}>
-        <div className={styles.heroGridPattern} aria-hidden="true" />
+        <div className={styles.ambience} aria-hidden="true">
+          <span className={styles.glowStart} />
+          <span className={styles.glowEnd} />
+          <span className={styles.heroGrid} />
+        </div>
+
         <div className={`container ${styles.heroInner}`}>
-          <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+          <nav className={styles.breadcrumbs} aria-label={t("services.details.breadcrumb")}>
             <Link to="/" className={styles.breadcrumbLink}>
-              {isRTL ? "الرئيسية" : "Home"}
+              {t("services.details.home")}
             </Link>
-            <span className={styles.breadcrumbSep}>/</span>
+            <span className={styles.breadcrumbSep} aria-hidden="true" />
             <Link to="/services" className={styles.breadcrumbLink}>
-              {isRTL ? "الخدمات" : "Services"}
+              {t("nav.services")}
             </Link>
-            <span className={styles.breadcrumbSep}>/</span>
+            {categoryTitle ? (
+              <>
+                <span className={styles.breadcrumbSep} aria-hidden="true" />
+                <Link to={categoryPath} className={styles.breadcrumbLink}>
+                  {categoryTitle}
+                </Link>
+              </>
+            ) : null}
+            <span className={styles.breadcrumbSep} aria-hidden="true" />
             <span className={styles.breadcrumbCurrent}>{title}</span>
           </nav>
 
-          <div className={styles.heroGrid}>
+          <div className={styles.heroStage}>
             <div className={styles.heroCopy}>
-              <h1 className={styles.title}>{title}</h1>
+              {categoryTitle ? (
+                <p className={styles.kicker}>
+                  <span className={styles.kickerLine} aria-hidden="true" />
+                  {categoryTitle}
+                </p>
+              ) : null}
 
-              {shortDescription && (
-                <p className={styles.overview}>{shortDescription}</p>
-              )}
+              <h1 className={styles.title}>{title}</h1>
+              <span className={styles.accent} aria-hidden="true" />
+
+              {lede ? <p className={styles.lede}>{lede}</p> : null}
 
               <div className={styles.heroActions}>
                 <Link to="/start-project" className={styles.primaryButton}>
-                  <span>{isRTL ? "ابدأ مشروعك" : "Start your project"}</span>
+                  <span>{t("nav.startProject")}</span>
                   <Icon name="arrowRight" className={styles.btnArrow} />
                 </Link>
                 <Link to="/contact" className={styles.secondaryButton}>
-                  {isRTL ? "استشارة تقنية" : "Technical consultation"}
+                  {t("services.details.consult")}
                 </Link>
               </div>
             </div>
 
-            <div className={styles.heroVisual}>
-              <div className={styles.productFrame}>
-                <div className={styles.frameChrome}>
-                  <span className={styles.chromeDots} aria-hidden="true">
-                    <i /><i /><i />
-                  </span>
-                  <span className={styles.chromeTitle}>{title}</span>
-                  <span className={styles.chromeBadge}>
-                    <Icon name={serviceIconName} fallback="codeSlash" />
-                  </span>
-                </div>
-                <div className={styles.frameViewport}>
-                  {service.image ? (
-                    <img
-                      src={service.image}
-                      alt={title}
-                      className={styles.heroImage}
-                      loading="eager"
-                      fetchPriority="high"
-                      decoding="async"
+            <aside className={styles.heroVisual} aria-hidden={signals.length === 0}>
+              <div className={styles.visualFrame}>
+                <div className={styles.visualCard}>
+                  <span className={styles.visualGlow} />
+                  <span className={styles.visualGlyph}>
+                    <ServiceRemoteIcon
+                      variant="item"
+                      slug={iconSlug}
+                      iconSvg={iconSvg}
+                      iconUrl={iconUrl}
                     />
-                  ) : (
-                    <div className={styles.visualFallback} aria-hidden="true">
-                      <Icon name={serviceIconName} fallback="codeSlash" />
-                    </div>
-                  )}
-                  <div className={styles.frameScrim} aria-hidden="true" />
+                  </span>
+                  {categoryTitle ? (
+                    <p className={styles.visualCaption}>{categoryTitle}</p>
+                  ) : null}
+                  {signals.length > 0 ? (
+                    <ul className={styles.visualSignals}>
+                      {signals.map((signal) => (
+                        <li key={signal}>{signal}</li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -167,34 +251,50 @@ export default function ServiceDetails() {
               <article id="overview" className={styles.panelSection}>
                 <header className={styles.blockHeader}>
                   <h2 className={styles.sectionTitle}>
-                    <span className={styles.sectionIndex}>01</span>
-                    {isRTL ? "نطاق الخدمة" : "Service scope"}
+                    <span className={styles.sectionIndex}>{nextIndex()}</span>
+                    {t("services.details.overview")}
                   </h2>
                 </header>
-                <div
-                  className={styles.richDescription}
-                  dangerouslySetInnerHTML={{ __html: longDescription }}
-                />
+                <div className={styles.overviewCopy}>
+                  {overview.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
               </article>
             )}
 
-            {hasFeatures && (
+            {hasScope && (
+              <article id="scope" className={styles.panelSection}>
+                <header className={styles.blockHeader}>
+                  <h2 className={styles.sectionTitle}>
+                    <span className={styles.sectionIndex}>{nextIndex()}</span>
+                    {t("services.details.scope")}
+                  </h2>
+                  <p className={styles.sectionSubtitle}>{t("services.details.scopeLede")}</p>
+                </header>
+                <ul className={styles.scopeList}>
+                  {scope.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+
+            {hasOutcomes && (
               <article id="benefits" className={styles.panelSection}>
                 <header className={styles.blockHeader}>
                   <h2 className={styles.sectionTitle}>
-                    <span className={styles.sectionIndex}>02</span>
-                    {isRTL ? "مخرجات التنفيذ" : "Delivery outcomes"}
+                    <span className={styles.sectionIndex}>{nextIndex()}</span>
+                    {t("services.details.outcomes")}
                   </h2>
-                  <p className={styles.sectionSubtitle}>
-                    {isRTL
-                      ? "قيمة عملية قابلة للقياس داخل مشروعك."
-                      : "Practical, measurable value inside your project."}
-                  </p>
+                  <p className={styles.sectionSubtitle}>{t("services.details.outcomesLede")}</p>
                 </header>
-
                 <ol className={styles.featuresList}>
-                  {features.map((feature, index) => (
-                    <li key={index} className={styles.featureItem}>
+                  {outcomes.map((feature, index) => (
+                    <li
+                      key={`${index}-${typeof feature === "string" ? feature : index}`}
+                      className={styles.featureItem}
+                    >
                       <span className={styles.featureNumber}>
                         {String(index + 1).padStart(2, "0")}
                       </span>
@@ -210,16 +310,11 @@ export default function ServiceDetails() {
             <article className={styles.panelSection}>
               <header className={styles.blockHeader}>
                 <h2 className={styles.sectionTitle}>
-                  <span className={styles.sectionIndex}>03</span>
-                  {isRTL ? "منهجية العمل" : "Delivery methodology"}
+                  <span className={styles.sectionIndex}>{nextIndex()}</span>
+                  {t("services.details.process")}
                 </h2>
-                <p className={styles.sectionSubtitle}>
-                  {isRTL
-                    ? "مسار واضح من التحليل حتى الإطلاق."
-                    : "A clear path from discovery to launch."}
-                </p>
+                <p className={styles.sectionSubtitle}>{t("services.details.processLede")}</p>
               </header>
-
               <ol className={styles.processTrack}>
                 {processSteps.map((step, index) => (
                   <li key={step.num} className={styles.processStep}>
@@ -234,25 +329,37 @@ export default function ServiceDetails() {
               </ol>
             </article>
 
-            {hasTechnologies && (
-              <article id="stack" className={styles.panelSection}>
+            {related.length > 0 && (
+              <article className={styles.panelSection}>
                 <header className={styles.blockHeader}>
                   <h2 className={styles.sectionTitle}>
-                    <span className={styles.sectionIndex}>04</span>
-                    {isRTL ? "أدوات وتقنيات التنفيذ" : "Tools & technologies"}
+                    <span className={styles.sectionIndex}>{nextIndex()}</span>
+                    {t("services.details.related")}
                   </h2>
-                  <p className={styles.sectionSubtitle}>
-                    {isRTL
-                      ? "تقنيات مختارة حسب طبيعة المشروع ومتطلبات التشغيل."
-                      : "Selected to match project scope and operational needs."}
-                  </p>
+                  <p className={styles.sectionSubtitle}>{t("services.details.relatedLede")}</p>
                 </header>
-
-                <ul className={styles.techGrid}>
-                  {technologies.map((item, index) => (
-                    <li key={index} className={styles.techChip}>
-                      <Icon name="check" className={styles.techCheck} />
-                      <span>{item}</span>
+                <ul className={styles.relatedGrid}>
+                  {related.map((item) => (
+                    <li key={item.slug}>
+                      <Link to={`/services/${item.slug}`} className={styles.relatedCard}>
+                        <span className={styles.relatedGlyph} aria-hidden="true">
+                          <ServiceRemoteIcon
+                            variant="item"
+                            slug={item.slug}
+                            iconSvg={item.icon_svg}
+                            iconUrl={item.icon_url}
+                          />
+                        </span>
+                        <span className={styles.relatedBody}>
+                          <span className={styles.relatedTitle}>
+                            {getLocalized(item.title, lang)}
+                          </span>
+                          <span className={styles.relatedText}>
+                            {getLocalized(item.description, lang) ||
+                              getLocalized(item.short_description, lang)}
+                          </span>
+                        </span>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -261,25 +368,17 @@ export default function ServiceDetails() {
 
             <div className={styles.ctaPanel}>
               <div className={styles.ctaCopy}>
-                <span className={styles.ctaLabel}>
-                  {isRTL ? "الخطوة التالية" : "Next step"}
-                </span>
-                <h3 className={styles.ctaTitle}>
-                  {isRTL ? "ابنِ الحل مع فريق تقني متخصص" : "Build with a specialized tech team"}
-                </h3>
-                <p className={styles.ctaText}>
-                  {isRTL
-                    ? "متطلبات واضحة، تصميم دقيق، وتنفيذ بجداول تسليم محددة."
-                    : "Clear requirements, precise design, and delivery on a defined timeline."}
-                </p>
+                <span className={styles.ctaLabel}>{t("services.details.nextStep")}</span>
+                <h3 className={styles.ctaTitle}>{t("services.details.ctaTitle")}</h3>
+                <p className={styles.ctaText}>{t("services.details.ctaText")}</p>
               </div>
               <div className={styles.ctaActions}>
                 <Link to="/start-project" className={styles.ctaPrimary}>
-                  <span>{isRTL ? "ابدأ مشروعك" : "Start your project"}</span>
+                  <span>{t("nav.startProject")}</span>
                   <Icon name="arrowRight" className={styles.btnArrow} />
                 </Link>
                 <Link to="/contact" className={styles.ctaSecondary}>
-                  {isRTL ? "تواصل مع فريق المبيعات" : "Talk to sales"}
+                  {t("nav.contact")}
                 </Link>
               </div>
             </div>

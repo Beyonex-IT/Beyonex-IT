@@ -7,8 +7,8 @@
   --services-surface: var(--color-surface);
   --services-surface-muted: var(--color-surface-muted);
   --services-border: var(--color-border);
-  --services-band-gap: clamp(3.75rem, 7vw, 5.25rem);
-  --services-hero-top: clamp(5.25rem, 10vw, 7.25rem);
+  --services-band-gap: clamp(3.25rem, 6vw, 4.5rem);
+  --services-hero-top: clamp(6.1rem, 9.5vw, 7.35rem);
 }
 
 .pageContent {
@@ -44,17 +44,17 @@
 }
 
 /* ══════════════════════════════════════════════════════════
-   Hero — slightly taller, professional band
+   Hero — editorial band, content sits below the navbar
    ══════════════════════════════════════════════════════════ */
 .servicesWrap :global([data-services-hero]) {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  min-height: clamp(380px, 46vh, 520px);
-  padding-block: var(--services-hero-top) clamp(2.25rem, 4.5vw, 3rem);
+  min-height: 0;
+  padding-block: var(--services-hero-top) clamp(2.6rem, 5vw, 3.6rem);
 }
 
 .servicesWrap :global([data-services-hero])::before {
@@ -66,9 +66,9 @@
   background-color: var(--services-surface-muted);
   background-image: url("/bg-sections/8.png");
   background-size: cover;
-  background-position: center 42%;
+  background-position: center 38%;
   background-repeat: no-repeat;
-  filter: brightness(1.02) saturate(0.96);
+  filter: brightness(1.04) saturate(0.92);
 }
 
 .servicesWrap :global([data-services-hero])::after {
@@ -79,24 +79,24 @@
   pointer-events: none;
   background:
     radial-gradient(
-      ellipse 72% 58% at 50% 36%,
-      rgba(var(--color-band-wash-rgb), 0.88) 0%,
-      rgba(var(--color-band-wash-rgb), 0.5) 46%,
-      rgba(var(--color-surface-muted-rgb), 0.12) 100%
+      ellipse 68% 62% at 50% 42%,
+      rgba(var(--color-band-wash-rgb), 0.78) 0%,
+      rgba(var(--color-band-wash-rgb), 0.42) 52%,
+      rgba(var(--color-surface-muted-rgb), 0.18) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(var(--color-band-wash-rgb), 0.82) 0%,
-      rgba(var(--color-band-wash-rgb), 0.42) 34%,
-      rgba(var(--color-band-wash-soft-rgb), 0.28) 62%,
-      rgba(var(--color-band-wash-rgb), 0.92) 100%
+      rgba(var(--color-band-wash-rgb), 0.88) 0%,
+      rgba(var(--color-band-wash-rgb), 0.38) 38%,
+      rgba(var(--color-band-wash-soft-rgb), 0.22) 68%,
+      rgba(var(--color-band-wash-rgb), 0.94) 100%
     ),
     linear-gradient(
       90deg,
-      rgba(var(--color-band-wash-rgb), 0.5) 0%,
-      transparent 18%,
-      transparent 82%,
-      rgba(var(--color-band-wash-rgb), 0.5) 100%
+      rgba(var(--color-band-wash-rgb), 0.55) 0%,
+      transparent 16%,
+      transparent 84%,
+      rgba(var(--color-band-wash-rgb), 0.55) 100%
     );
   box-shadow:
     inset 0 1px 0 rgba(var(--color-band-wash-rgb), 0.7),
@@ -117,7 +117,7 @@
     ),
     linear-gradient(
       180deg,
-      rgba(var(--color-band-wash-rgb), 0.7) 0%,
+      rgba(var(--color-band-wash-rgb), 0.78) 0%,
       rgba(var(--color-band-wash-rgb), 0.4) 40%,
       rgba(var(--color-footer-navy-rgb), 0.65) 100%
     );
@@ -130,64 +130,6 @@
   position: relative;
   z-index: 1;
   width: 100%;
-}
-
-/* Hero typography — page header composition */
-.servicesWrap :global([data-services-hero]) [class*="header"],
-.servicesWrap :global([data-services-hero]) [class*="homeHeader"] {
-  margin: 0 auto !important;
-  max-width: min(42rem, 92vw);
-  text-align: center;
-}
-
-.servicesWrap :global([data-services-hero]) h1,
-.servicesWrap :global([data-services-hero]) h2 {
-  margin: 0 0 clamp(0.85rem, 1.8vw, 1.15rem) !important;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
-  font-size: clamp(2.15rem, 5.2vw, 3.35rem);
-  font-weight: 800;
-  color: var(--color-section-title);
-  text-wrap: balance;
-}
-
-.servicesWrap :global([data-services-hero]) h1 + p,
-.servicesWrap :global([data-services-hero]) h2 + p,
-.servicesWrap :global([data-services-hero]) [class*="subtitle"] {
-  margin: 0 auto !important;
-  max-width: 34rem;
-  font-size: clamp(1rem, 1.85vw, 1.12rem) !important;
-  font-weight: 600 !important;
-  line-height: 1.75 !important;
-  color: var(--brand-600) !important;
-  text-wrap: pretty;
-}
-
-.servicesWrap :global([data-services-hero]) [class*="description"] {
-  margin: clamp(0.85rem, 1.8vw, 1.15rem) auto 0 !important;
-  max-width: var(--content-prose, 36rem);
-  font-size: clamp(0.94rem, 1.55vw, 1.02rem) !important;
-  font-weight: 400 !important;
-  line-height: 1.85 !important;
-  color: var(--color-text-muted) !important;
-  text-wrap: pretty;
-}
-
-/* Soft accent rule under title */
-.servicesWrap :global([data-services-hero]) h1::after,
-.servicesWrap :global([data-services-hero]) h2::after {
-  content: "";
-  display: block;
-  width: 3rem;
-  height: 3px;
-  margin: clamp(0.95rem, 2vw, 1.2rem) auto 0;
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    var(--brand-600) 0%,
-    var(--brand-400) 100%
-  );
-  opacity: 0.85;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -218,12 +160,8 @@
 /* ── Tablet ── */
 @media (max-width: 992px) {
   .servicesPage {
-    --services-band-gap: clamp(3.25rem, 6.5vw, 4.5rem);
-    --services-hero-top: clamp(4.75rem, 9vw, 6rem);
-  }
-
-  .servicesWrap :global([data-services-hero]) {
-    min-height: clamp(340px, 42vh, 440px);
+    --services-band-gap: clamp(2.85rem, 6vw, 3.75rem);
+    --services-hero-top: clamp(5.85rem, 10vw, 6.75rem);
   }
 
   .servicesWrap :global([data-services-hero])::before {
@@ -258,8 +196,8 @@
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .servicesPage {
-    --services-band-gap: clamp(2.85rem, 7vw, 3.75rem);
-    --services-hero-top: clamp(4rem, 11vw, 5rem);
+    --services-band-gap: clamp(2.5rem, 7vw, 3.25rem);
+    --services-hero-top: clamp(5.5rem, 14vw, 6.25rem);
   }
 
   .servicesWrap {
@@ -267,7 +205,7 @@
   }
 
   .servicesWrap :global([data-services-hero]) {
-    min-height: clamp(280px, 48vh, 360px);
+    padding-block: var(--services-hero-top) 2.15rem;
   }
 
   .servicesWrap :global([data-services-hero])::before {
@@ -290,30 +228,13 @@
         rgba(var(--color-white-rgb), 0.96) 100%
       );
   }
-
-  .servicesWrap :global([data-services-hero]) h1,
-  .servicesWrap :global([data-services-hero]) h2 {
-    font-size: clamp(1.75rem, 7.5vw, 2.25rem);
-  }
-
-  .servicesWrap :global([data-services-hero]) h1 + p,
-  .servicesWrap :global([data-services-hero]) h2 + p,
-  .servicesWrap :global([data-services-hero]) [class*="subtitle"] {
-    font-size: 0.98rem !important;
-    line-height: 1.7 !important;
-  }
-
-  .servicesWrap :global([data-services-hero]) [class*="description"] {
-    font-size: 0.92rem !important;
-    line-height: 1.8 !important;
-  }
 }
 
 /* ── Small phones ── */
 @media (max-width: 480px) {
   .servicesPage {
-    --services-band-gap: clamp(2.85rem, 8vw, 3.75rem);
-    --services-hero-top: clamp(3.35rem, 12vw, 4.25rem);
+    --services-band-gap: clamp(2.35rem, 8vw, 3rem);
+    --services-hero-top: clamp(5.25rem, 16vw, 5.85rem);
   }
 
   .servicesWrap :global([data-services-hero])::before {

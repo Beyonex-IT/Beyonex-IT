@@ -2,7 +2,6 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import styles from './HomeProcess.module.css'
 import { useIntersectionReveal } from '../../../hooks/useIntersectionReveal'
-import SectionHeader from '../../Common/SectionHeader/SectionHeader.jsx'
 import Icon from '../../Common/Icon.jsx'
 
 const stepIcons = ['chatDots', 'lightbulb', 'code', 'rocketTakeoff']
@@ -30,16 +29,11 @@ export default function HomeProcess() {
       aria-label={t('homePage.process.title')}
     >
       <div className="container">
-        <SectionHeader
-          isHome
-          showEyebrow={false}
-          eyebrow={t('homePage.process.label')}
-          title={t('homePage.process.title')}
-          accentSize="md"
-          subtitle={t('homePage.process.subtitle')}
-          isVisible={isVisible}
-          moduleStyles={styles}
-        />
+        <header className={`${styles.intro} ${isVisible ? styles.introIn : ""}`}>
+          <h2 className={styles.headline}>{t("homePage.process.title")}</h2>
+          <span className={styles.accent} aria-hidden="true" />
+          <p className={styles.lede}>{t("homePage.process.subtitle")}</p>
+        </header>
 
         <div className={`${styles.stepsTrack} ${isVisible ? styles.visible : ''}`}>
           {steps.map((step, index) => (

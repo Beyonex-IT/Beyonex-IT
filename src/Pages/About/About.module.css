@@ -19,6 +19,8 @@
 .aboutStats,
 .aboutValues,
 .aboutTeam,
+.aboutPartnership,
+.aboutPartners,
 .aboutCta {
   position: relative;
   isolation: isolate;
@@ -30,6 +32,8 @@
 .aboutStats::before,
 .aboutValues::before,
 .aboutTeam::before,
+.aboutPartnership::before,
+.aboutPartners::before,
 .aboutCta::before {
   content: "";
   position: absolute;
@@ -43,6 +47,8 @@
 .aboutStats > *,
 .aboutValues > *,
 .aboutTeam > *,
+.aboutPartnership > *,
+.aboutPartners > *,
 .aboutCta > * {
   position: relative;
   z-index: 1;
@@ -157,6 +163,86 @@
   );
 }
 
+/* ── Alemba partnership — full navy band ── */
+.aboutPartnership {
+  padding-block: 0;
+}
+
+.aboutPartnership::before {
+  background:
+    linear-gradient(
+      105deg,
+      var(--color-navy-deep) 0%,
+      var(--brand-800) 38%,
+      var(--color-hero-navy) 68%,
+      rgba(var(--color-tech-rgb), 0.42) 100%
+    );
+  box-shadow: none;
+}
+
+.aboutPartnership :global(.container) {
+  padding-block: 0;
+}
+
+/* ── Success partners — same spotlight as home, without the home CTA ── */
+.aboutPartners {
+  padding-block: clamp(4.5rem, 9vw, 7rem);
+}
+
+.aboutPartners:empty {
+  display: none;
+  padding: 0;
+}
+
+.aboutPartners::before {
+  background-color: var(--brand-800);
+  background-image: url("/bg-sections/4.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow:
+    inset 0 1px 0 rgba(var(--color-primary-rgb), 0.08),
+    inset 0 -1px 0 rgba(var(--color-black-rgb), 0.2);
+}
+
+.aboutPartners::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    rgba(var(--color-ink-alt-rgb), 0.88) 0%,
+    rgba(var(--color-ink-alt-rgb), 0.72) 42%,
+    rgba(var(--color-ink-alt-rgb), 0.48) 100%
+  );
+}
+
+.aboutPartners :global(.container),
+.aboutPartners :global(#partners) {
+  padding-block: 0;
+  background: transparent;
+}
+
+.aboutPartners :global(#partners) header,
+.aboutPartners :global(header) {
+  margin-bottom: clamp(2.5rem, 5vw, 3.75rem) !important;
+}
+
+.aboutPartners :global(#partners) h2,
+.aboutPartners :global(h2) {
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  font-size: clamp(2rem, 5vw, 3.15rem);
+  font-weight: 800;
+  color: var(--color-white) !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: var(--color-white) !important;
+  background-clip: unset !important;
+}
+
 /* ── CTA — muted close into footer ── */
 .aboutCta::before {
   background: linear-gradient(
@@ -165,4 +251,23 @@
     var(--color-surface-muted) 72%,
     rgba(var(--color-surface-muted-rgb), 0.92) 100%
   );
+}
+
+@media (max-width: 768px) {
+  .aboutPartners {
+    padding-block: clamp(3.5rem, 9vw, 5rem);
+  }
+
+  .aboutPartners :global(#partners) h2,
+  .aboutPartners :global(h2) {
+    font-size: clamp(0.92rem, 4.5vw, 1.3rem);
+    white-space: nowrap;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .aboutPartners :global(#partners) header,
+  .aboutPartners :global(header) {
+    margin-bottom: clamp(2rem, 5vw, 2.5rem) !important;
+  }
 }

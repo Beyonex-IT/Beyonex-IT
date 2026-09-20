@@ -13,7 +13,14 @@
     "bookAppointment": "Book Appointment",
     "startProject": "Start Your Project",
     "themeLight": "Light mode",
-    "themeDark": "Dark mode"
+    "themeDark": "Dark mode",
+    "megaMenu": {
+      "explore": "Explore our services",
+      "viewAll": "View all services",
+      "ctaTitle": "Need a tailored solution?",
+      "ctaText": "Our team designs the right technical solution for your business goals.",
+      "itemCount": "{{count}} services"
+    }
   },
   "hero": {
     "title": "BEYONEX IT",
@@ -64,6 +71,20 @@
       "trust1": "Free consultation",
       "trust2": "Response within 24 hours",
       "trust3": "Custom solutions for your needs"
+    },
+    "partnership": {
+      "kicker": "Official Partnership",
+      "badge": "Alemba Partner",
+      "headline": "ITSM that runs the service — not just the tickets",
+      "lede": "Alemba Service Manager is our enterprise ITSM platform. As Alemba's partner, Beyonex IT implements and operates it around your service desk, incidents, change, assets, and SLAs — one operating model you can measure.",
+      "visualAlt": "Alemba and Beyonex IT partnership",
+      "alembaLogoAlt": "Alemba",
+      "proofLabel": "What this partnership delivers",
+      "proof1": "ITIL-aligned processes",
+      "proof2": "From service desk to SLA",
+      "proof3": "Local implementation & support",
+      "ctaPrimary": "Explore ITSM",
+      "ctaSecondary": "Talk to a specialist"
     }
   },
   "advantages": {
@@ -147,8 +168,42 @@
       }
     },
     "learnMore": "Learn More",
+    "discoverMore": "Learn more",
+    "knowMore": "Learn more",
     "serviceDetails": "Service Details",
-    "showMore": "View More"
+    "showMore": "View More",
+    "category": {
+      "breadcrumb": "Services",
+      "offerings": "What we offer",
+      "offeringsTitle": "Services in this track",
+      "offeringsLede": "Each item is a focused part of the solution, with a clear mark of its own.",
+      "count": "{{count}} specialized services",
+      "ctaTitle": "Ready to turn this into a project?",
+      "ctaText": "We start by understanding your need and mapping a clear path from day one."
+    },
+    "details": {
+      "breadcrumb": "Breadcrumb",
+      "home": "Home",
+      "consult": "Technical consultation",
+      "overview": "Service scope",
+      "scope": "What delivery includes",
+      "scopeLede": "Concrete items that run inside the project — not a generic promise list.",
+      "outcomes": "Delivery outcomes",
+      "outcomesLede": "Practical value you can review after handover.",
+      "process": "How we work",
+      "processLede": "A clear path from understanding to handover on this track.",
+      "stack": "Tools & technologies",
+      "stackLede": "Selected to match project scope and operational needs.",
+      "related": "Related services on this track",
+      "relatedLede": "Other items that complete the solution when the need is wider than one service.",
+      "nextStep": "Next step",
+      "ctaTitle": "Turn this service into a project with a clear path",
+      "ctaText": "We start by understanding the need, then set a delivery scope and a timeline we can keep.",
+      "notFoundTitle": "Service not found",
+      "notFoundText": "This link is invalid or the service has changed.",
+      "goBack": "Go back",
+      "allServices": "All services"
+    }
   },
   "common": {
     "showMore": "View More",

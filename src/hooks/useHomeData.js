@@ -9,6 +9,7 @@ export function useHomeData() {
   return {
     ...query,
     hero: homeData?.hero_section,
+    serviceCatalog: homeData?.service_catalog ?? [],
     services: homeData?.services ?? [],
     whyUs: homeData?.why_us ?? [],
     about: homeData?.about,

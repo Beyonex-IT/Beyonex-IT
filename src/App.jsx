@@ -9,7 +9,7 @@ import Privacy from './Pages/Privacy/Privacy'
 import ScrollToTop from './Components/Layout/ScrollToTop/ScrollToTop'
 import { ThemeProvider } from './context/ThemeContext'
 
-const ServiceDetails = lazy(() => import('./Pages/ServiceDetails/ServiceDetails'))
+const ServiceRoute = lazy(() => import('./Pages/ServiceRoute'))
 const StartProject = lazy(() => import('./Pages/StartProject/StartProject'))
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<ContactUs />} />
           <Route path="services" element={<Services />} />
-          <Route path="services/:serviceKey" element={<ServiceDetails />} />
+          <Route path="services/:serviceKey" element={<ServiceRoute />} />
           <Route path="start-project" element={<StartProject />} />
           <Route path="privacy" element={<Privacy />} />
         </Route>

@@ -13,6 +13,7 @@
    Home section rhythm
    ══════════════════════════════════════════════════════════ */
 .homeServices,
+.homePartnership,
 .homeAbout,
 .homeProcess,
 .homeAdvantages,
@@ -24,6 +25,7 @@
 
 /* Solid base — hides global grid, unique per section */
 .homeServices::before,
+.homePartnership::before,
 .homeAbout::before,
 .homeProcess::before,
 .homeAdvantages::before,
@@ -37,6 +39,7 @@
 
 /* Accent glow + section transitions */
 .homeServices::after,
+.homePartnership::after,
 .homeAbout::after,
 .homeProcess::after,
 .homeAdvantages::after,
@@ -49,6 +52,7 @@
 }
 
 .homeServices > *,
+.homePartnership > *,
 .homeAbout > *,
 .homeProcess > *,
 .homeAdvantages > *,
@@ -69,6 +73,7 @@
 }
 
 .homeServices :global(.container),
+.homePartnership :global(.container),
 .homeAbout :global(.container),
 .homeProcess :global(.container),
 .homeAdvantages :global(.container),
@@ -77,6 +82,7 @@
 }
 
 .homeServices :global(#services) header,
+.homePartnership :global(#partnership) header,
 .homeAbout :global(#about) header,
 .homeProcess :global(#process) header,
 .homeAdvantages :global(#advantages) header,
@@ -153,6 +159,7 @@
   justify-content: center;
   padding-block: clamp(3.5rem, 7vw, 5.5rem);
   margin-top: 0;
+  overflow: visible;
 }
 
 .homeServices::before {
@@ -161,6 +168,30 @@
 }
 
 .homeServices::after {
+  background: transparent;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════
+   1.5 · Alemba partnership — cinematic ITSM band
+   ══════════════════════════════════════════════════════════ */
+.homePartnership {
+  padding-block: 0;
+}
+
+.homePartnership::before {
+  background:
+    linear-gradient(
+      105deg,
+      var(--color-navy-deep) 0%,
+      var(--brand-800) 38%,
+      var(--color-hero-navy) 68%,
+      rgba(var(--color-tech-rgb), 0.42) 100%
+    );
+  box-shadow: none;
+}
+
+.homePartnership::after {
   background: transparent;
   pointer-events: none;
 }
@@ -312,6 +343,10 @@
     padding-block: clamp(4rem, 10vw, 5.5rem);
   }
 
+  .homePartnership {
+    padding-block: 0;
+  }
+
   .homePartnersCta {
     padding-block: clamp(3.5rem, 9vw, 5rem) clamp(4.5rem, 10vw, 6.5rem);
   }
@@ -338,6 +373,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .homeServices::after,
+  .homePartnership::after,
   .homeAbout::after,
   .homeProcess::after,
   .homeAdvantages::after,

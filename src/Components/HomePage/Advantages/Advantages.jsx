@@ -49,16 +49,26 @@ export default function Advantages({ variant }) {
       </div>
 
       <div className="container">
-        <SectionHeader
-          isHome={isHome}
-          showEyebrow={!isHome}
-          eyebrow={t("advantages.label")}
-          title={t("advantages.title")}
-          accentSize="md"
-          subtitle={t("advantages.subtitle")}
-          isVisible={isVisible}
-          moduleStyles={styles}
-        />
+        {isHome ? (
+          <header
+            className={`${styles.homeIntro} ${isVisible ? styles.homeIntroIn : ""}`}
+          >
+            <h2 className={styles.homeHeadline}>{t("advantages.title")}</h2>
+            <span className={styles.homeAccent} aria-hidden="true" />
+            <p className={styles.homeLede}>{t("advantages.subtitle")}</p>
+          </header>
+        ) : (
+          <SectionHeader
+            isHome={false}
+            showEyebrow
+            eyebrow={t("advantages.label")}
+            title={t("advantages.title")}
+            accentSize="md"
+            subtitle={t("advantages.subtitle")}
+            isVisible={isVisible}
+            moduleStyles={styles}
+          />
+        )}
 
         <div className={`${styles.grid} ${isVisible ? styles.visible : ""}`}>
           {items.map((item, index) => {

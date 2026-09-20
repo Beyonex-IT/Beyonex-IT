@@ -127,47 +127,11 @@
 }
 
 .pillarCard::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  inset-inline: 1.5rem;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(var(--color-primary-rgb), 0.45) 40%,
-    rgba(var(--color-primary-rgb), 0.45) 60%,
-    transparent
-  );
-  opacity: 0;
-  transition: opacity 0.45s ease;
+  content: none;
 }
 
 .pillarCard:hover {
   background: rgba(var(--color-primary-rgb), 0.035);
-}
-
-.pillarCard:hover::before {
-  opacity: 1;
-}
-
-.pillarBgNumber {
-  position: absolute;
-  top: 0.5rem;
-  inset-inline-end: 1rem;
-  font-size: clamp(3.5rem, 8vw, 5rem);
-  font-weight: 800;
-  line-height: 1;
-  color: rgba(var(--color-primary-rgb), 0.1);
-  letter-spacing: -0.05em;
-  user-select: none;
-  pointer-events: none;
-  transition: color 0.35s ease;
-}
-
-.pillarCard:hover .pillarBgNumber {
-  color: rgba(var(--color-primary-rgb), 0.16);
 }
 
 .pillarHead {
@@ -180,13 +144,26 @@
   z-index: 1;
 }
 
+.pillarGlyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  color: var(--color-primary);
+}
+
+.pillarGlyph svg {
+  width: 100%;
+  height: 100%;
+}
+
 .pillarIconWrap {
   width: 52px;
   height: 52px;
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   border-radius: 14px;
   background: linear-gradient(
     145deg,
@@ -480,16 +457,6 @@
     align-items: center;
   }
 
-  .pillarBgNumber {
-    inset-inline-end: 50%;
-    transform: translateX(50%);
-    top: 0.25rem;
-  }
-
-  [dir="rtl"] .pillarBgNumber {
-    transform: translateX(-50%);
-  }
-
   .aboutBtn {
     width: 100%;
     min-width: 0;
@@ -508,7 +475,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .header,
-  .ctaWrap {
+  .ctaWrap,
+  .homeLayout .homeIntro {
     opacity: 1;
     transform: none;
     transition: none;
@@ -524,35 +492,133 @@
 /* ══════════════════════════════════════════════════════════
    Home — brand-aligned editorial layout
    ══════════════════════════════════════════════════════════ */
-.homeLayout .homeHeader {
-  margin-bottom: clamp(2.25rem, 4.5vw, 3rem) !important;
-  max-width: min(62rem, 96vw);
+.homeLayout .homeIntro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 46rem;
+  margin-inline: auto;
+  margin-bottom: clamp(2.6rem, 5vw, 3.75rem);
+  padding-inline: 0.4rem;
+  opacity: 0;
+  transform: translateY(18px);
 }
 
-.homeLayout .title {
-  color: var(--color-section-title);
+.homeLayout .homeIntroIn {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.homeLayout .homeKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.05rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-400) !important;
+}
+
+.homeLayout .homeKickerLine {
+  display: block;
+  width: 1.85rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+[dir="rtl"] .homeLayout .homeKicker {
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+
+.homeLayout .homeHeadline {
+  margin: 0;
+  max-width: 18em;
+  font-size: clamp(1.4rem, 3.2vw, 2.15rem) !important;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.22 !important;
+  text-wrap: balance;
+  color: var(--color-section-title) !important;
   text-shadow: none;
 }
 
-.homeLayout .subtitle {
-  color: var(--color-text-subtitle);
-  font-weight: 600;
-  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
-  max-width: min(60rem, 95vw);
-  margin-inline: auto;
+.homeLayout .homeAccent {
+  width: 2.75rem;
+  height: 3px;
+  margin-top: 1.15rem;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand-200), var(--brand-400));
 }
 
-.homeLayout .description {
-  color: var(--color-text-muted);
-  line-height: 1.85;
-  max-width: min(60rem, 95vw);
+.homeLayout .homeLede {
+  margin: 1.2rem 0 0;
+  max-width: 38rem;
+  font-size: 1.02rem !important;
+  font-weight: 400;
+  line-height: 1.9 !important;
+  text-wrap: pretty;
+  color: var(--color-text-muted) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeKicker {
+  color: var(--brand-200) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeHeadline {
+  color: var(--brand-50) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeLede {
+  color: #c5d6e4 !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .pillarCard {
+  background: #0e3758;
+  border-color: rgba(234, 243, 248, 0.1);
+  box-shadow: 0 12px 28px rgba(var(--color-black-rgb), 0.22);
+}
+
+:global(html[data-theme="dark"]) .homeLayout .pillarGlyph {
+  color: var(--brand-50);
+}
+
+:global(html[data-theme="dark"]) .homeLayout .pillarTitle {
+  color: var(--brand-50);
+}
+
+:global(html[data-theme="dark"]) .homeLayout .pillarText {
+  color: #c5d6e4;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :global(html[data-theme="dark"]) .homeLayout .pillarCard:hover {
+    background: linear-gradient(180deg, #1a547e 0%, #15486d 100%);
+    box-shadow: 0 22px 44px rgba(var(--color-black-rgb), 0.35);
+  }
+
+  :global(html[data-theme="dark"]) .homeLayout .pillarCard:hover .pillarGlyph {
+    color: var(--color-white);
+  }
+
+  :global(html[data-theme="dark"]) .homeLayout .pillarCard:hover .pillarTitle,
+  :global(html[data-theme="dark"]) .homeLayout .pillarCard:hover .pillarText {
+    color: var(--color-white);
+  }
 }
 
 .homeLayout .pillarsPanel {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
-  max-width: min(960px, 94vw);
+  gap: clamp(1rem, 2vw, 1.4rem);
+  max-width: min(980px, 94vw);
   margin-inline: auto;
   background: transparent;
   border: none;
@@ -572,102 +638,72 @@
 
 .homeLayout .pillarCard {
   position: relative;
-  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.75rem, 3.5vw, 2.75rem);
+  min-height: 0;
+  padding: 1.55rem 1.4rem 1.4rem;
   opacity: 1;
-  border: none;
-  min-height: clamp(200px, 28vw, 240px);
-  transition: transform 0.35s ease;
+  border-radius: 1.4rem;
+  background: var(--color-white);
+  border: 1px solid rgba(var(--color-dark-rgb), 0.06);
+  box-shadow: 0 12px 30px rgba(var(--color-dark-rgb), 0.05);
+  overflow: hidden;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.32s ease,
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
 }
 
-.homeLayout .pillarCard:first-child {
-  border-inline-end: 1px solid var(--color-border);
-}
+@media (hover: hover) and (pointer: fine) {
+  .homeLayout .pillarCard:hover {
+    transform: translateY(-6px);
+    background: linear-gradient(180deg, #d7e4f6 0%, #c7d8f1 100%);
+    border-color: transparent;
+    box-shadow:
+      0 18px 34px rgba(var(--color-dark-rgb), 0.14),
+      0 1px 0 rgba(var(--color-white-rgb), 0.55) inset;
+  }
 
-.homeLayout .pillarCard::before {
-  display: none;
-}
-
-.homeLayout .pillarCard:hover {
-  background: transparent;
-  transform: translateY(-3px);
-}
-
-.homeLayout .pillarBgNumber {
-  position: absolute;
-  top: 0.15rem;
-  inset-inline-end: 0.5rem;
-  margin-bottom: 0;
-  font-size: clamp(3.25rem, 7vw, 4.75rem);
-  font-weight: 800;
-  color: var(--color-border-soft);
-  letter-spacing: -0.05em;
-  line-height: 1;
-  user-select: none;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.homeLayout .pillarCard:hover .pillarBgNumber {
-  color: var(--color-text-soft);
+  .homeLayout .pillarCard:hover .pillarGlyph {
+    transform: translateY(-1px);
+  }
 }
 
 .homeLayout .pillarHead {
   position: relative;
   z-index: 1;
-  margin-bottom: 1.15rem;
-  gap: 0.85rem;
+  margin-bottom: 1.05rem;
+  gap: 0.7rem;
 }
 
-.homeLayout .pillarIconWrap {
-  width: auto;
-  height: auto;
+.homeLayout .pillarGlyph {
+  width: 1.7rem;
+  height: 1.7rem;
   padding: 0;
-  background: transparent;
-  border: none;
   border-radius: 0;
+  color: var(--brand-800);
+  background: none;
+  border: none;
   box-shadow: none;
 }
 
-.homeLayout .pillarCard:hover .pillarIconWrap {
-  transform: none;
-  box-shadow: none;
-}
-
-.homeLayout .pillarIcon {
-  font-size: 1.5rem;
-  filter: none;
-  color: var(--brand-400);
-  opacity: 1;
+.homeLayout .pillarGlyph svg {
+  width: 100%;
+  height: 100%;
 }
 
 .homeLayout .pillarTitle {
-  color: var(--color-text-dark);
+  color: var(--brand-800);
   font-size: clamp(1.08rem, 2vw, 1.28rem);
   font-weight: 700;
-}
-
-.homeLayout .pillarAccent {
-  width: 28px;
-  height: 2px;
-  background: var(--brand-200);
-  opacity: 1;
-}
-
-.homeLayout .pillarCard:hover .pillarAccent {
-  width: 40px;
 }
 
 .homeLayout .pillarText {
   position: relative;
   z-index: 1;
   font-size: clamp(0.88rem, 1.6vw, 0.94rem);
-  line-height: 1.8;
-  color: var(--color-text-muted);
-  max-width: 44ch;
-}
-
-.homeLayout .pillarCard:hover .pillarText {
+  line-height: 1.85;
   color: var(--brand-700);
+  max-width: none;
 }
 
 .homeLayout .ctaWrap {
@@ -720,23 +756,19 @@
 @media (max-width: 768px) {
   .homeLayout .pillarsPanel {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 1rem;
+    max-width: 22.5rem;
   }
 
   .homeLayout .pillarCard {
-    padding-inline: 0;
-    border-inline-end: none !important;
+    padding: 1.4rem 1.2rem 1.25rem;
     min-height: auto;
   }
 
   .homeLayout .pillarCard + .pillarCard {
-    border-top: 1px solid var(--color-border);
-    padding-top: 2.25rem;
-    margin-top: 2.25rem;
-  }
-
-  .homeLayout .pillarText {
-    max-width: none;
+    border-top: none;
+    padding-top: 1.4rem;
+    margin-top: 0;
   }
 
   .homeLayout .aboutBtn {
@@ -757,10 +789,5 @@
 
   .homeLayout .pillarTitleWrap {
     align-items: flex-start;
-  }
-
-  .homeLayout .pillarBgNumber {
-    top: 0;
-    inset-inline-end: 0;
   }
 }

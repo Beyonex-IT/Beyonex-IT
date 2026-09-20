@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { Link, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styles from "./Navbar.module.css";
@@ -8,6 +9,17 @@ import { useResolvedMediaUrl } from "../../../hooks/useResolvedMediaUrl";
 import { useTheme } from "../../../hooks/useTheme";
 import { getLocalizedOrRaw } from "../../../utils/i18nHelpers";
 import Icon from "../../Common/Icon.jsx";
+import ServicesMegaMenu from "./ServicesMegaMenu.jsx";
+
+function subscribeDesktopNav(onStoreChange) {
+  const mediaQuery = window.matchMedia("(min-width: 992px)");
+  mediaQuery.addEventListener("change", onStoreChange);
+  return () => mediaQuery.removeEventListener("change", onStoreChange);
+}
+
+function getDesktopNavSnapshot() {
+  return window.matchMedia("(min-width: 992px)").matches;
+}
 
 const LANGUAGES = [
   {
@@ -35,7 +47,17 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const servicesTriggerRef = useRef(null);
+  const servicesPanelRef = useRef(null);
+  const servicesOpenTimer = useRef(null);
+  const servicesCloseTimer = useRef(null);
+  const isDesktopNav = useSyncExternalStore(
+    subscribeDesktopNav,
+    getDesktopNavSnapshot,
+    getDesktopNavSnapshot,
+  );
 
   const currentLanguage =
     LANGUAGES.find((lang) => lang.code === i18n.language) || LANGUAGES[0];
@@ -48,9 +70,51 @@ function Navbar() {
     setDropdownOpen(false);
   };
 
+  const clearServicesTimers = () => {
+    if (servicesOpenTimer.current) {
+      clearTimeout(servicesOpenTimer.current);
+      servicesOpenTimer.current = null;
+    }
+    if (servicesCloseTimer.current) {
+      clearTimeout(servicesCloseTimer.current);
+      servicesCloseTimer.current = null;
+    }
+  };
+
   const closeNav = () => {
+    clearServicesTimers();
     setNavOpen(false);
     setDropdownOpen(false);
+    setServicesOpen(false);
+  };
+
+  const openServicesMenu = () => {
+    if (servicesCloseTimer.current) {
+      clearTimeout(servicesCloseTimer.current);
+      servicesCloseTimer.current = null;
+    }
+    if (servicesOpen) {
+      setDropdownOpen(false);
+      return;
+    }
+    servicesOpenTimer.current = setTimeout(() => {
+      setDropdownOpen(false);
+      setServicesOpen(true);
+    }, 70);
+  };
+
+  const closeServicesMenu = (immediate = false) => {
+    if (servicesOpenTimer.current) {
+      clearTimeout(servicesOpenTimer.current);
+      servicesOpenTimer.current = null;
+    }
+    if (immediate) {
+      setServicesOpen(false);
+      return;
+    }
+    servicesCloseTimer.current = setTimeout(() => {
+      setServicesOpen(false);
+    }, 220);
   };
 
   const themeToggleButton = (className = "") => (
@@ -73,16 +137,23 @@ function Navbar() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
+
+      const inServicesTrigger = servicesTriggerRef.current?.contains(event.target);
+      const inServicesPanel = servicesPanelRef.current?.contains(event.target);
+      if (!inServicesTrigger && !inServicesPanel) {
+        setServicesOpen(false);
+      }
     };
 
     const handleEscape = (event) => {
       if (event.key === "Escape") {
         setDropdownOpen(false);
+        setServicesOpen(false);
         setNavOpen(false);
       }
     };
 
-    if (dropdownOpen || navOpen) {
+    if (dropdownOpen || navOpen || servicesOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleEscape);
     }
@@ -91,7 +162,7 @@ function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [dropdownOpen, navOpen]);
+  }, [dropdownOpen, navOpen, servicesOpen]);
 
   useEffect(() => {
     if (!navOpen) return undefined;
@@ -103,6 +174,15 @@ function Navbar() {
       document.body.style.overflow = previousOverflow;
     };
   }, [navOpen]);
+
+  useEffect(() => {
+    setServicesOpen(false);
+    clearServicesTimers();
+  }, [isDesktopNav]);
+
+  useEffect(() => {
+    return () => clearServicesTimers();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,6 +204,9 @@ function Navbar() {
       }
       to={to}
       end={options.end}
+      onMouseEnter={() => {
+        if (isDesktopNav) closeServicesMenu(true);
+      }}
       onClick={() => {
         options.onClick?.();
         closeNav();
@@ -157,7 +240,10 @@ function Navbar() {
           className={`${styles.langTrigger} ${
             dropdownOpen ? styles.langOpen : ""
           }`}
-          onClick={() => setDropdownOpen((open) => !open)}
+          onClick={() => {
+            setDropdownOpen((open) => !open);
+            setServicesOpen(false);
+          }}
           aria-haspopup="listbox"
           aria-expanded={dropdownOpen}
           aria-label={i18n.language === "ar" ? "اللغة" : "Language"}
@@ -213,12 +299,39 @@ function Navbar() {
   );
 
   return (
-    <nav
-      className={`navbar navbar-expand-lg ${styles.navbar} ${
-        scrolled ? styles.navbarScrolled : ""
-      } ${navOpen ? styles.navbarMenuOpen : ""}`}
-      data-theme={theme}
-    >
+    <>
+      {isDesktopNav &&
+        createPortal(
+          <>
+            {servicesOpen && (
+              <div
+                className={styles.megaBackdrop}
+                onClick={() => closeServicesMenu(true)}
+                aria-hidden="true"
+              />
+            )}
+            <ServicesMegaMenu
+              variant="desktop"
+              open={servicesOpen}
+              onNavigate={closeNav}
+              onMouseEnter={openServicesMenu}
+              onMouseLeave={() => closeServicesMenu()}
+              panelRef={servicesPanelRef}
+            />
+          </>,
+          document.body,
+        )}
+      <nav
+        className={`navbar navbar-expand-lg ${styles.navbar} ${
+          scrolled ? styles.navbarScrolled : ""
+        } ${navOpen ? styles.navbarMenuOpen : ""} ${
+          servicesOpen ? styles.navbarMegaOpen : ""
+        }`}
+        data-theme={theme}
+        onMouseLeave={() => {
+          if (isDesktopNav) closeServicesMenu();
+        }}
+      >
       <div className="container">
         <div className={styles.mobileBar}>
           {renderBrand()}
@@ -294,10 +407,71 @@ function Navbar() {
                 <li className="nav-item">
                   {renderNavLink("/about", t("nav.about"))}
                 </li>
-                <li className="nav-item">
-                  {renderNavLink("/services", t("nav.services"), {
-                    onClick: () => window.scrollTo(0, 0),
-                  })}
+                <li
+                  className={`nav-item ${styles.servicesItem} ${
+                    servicesOpen ? styles.servicesItemOpen : ""
+                  }`}
+                  ref={servicesTriggerRef}
+                  onMouseEnter={() => {
+                    if (isDesktopNav) openServicesMenu();
+                  }}
+                >
+                  <div className={styles.servicesCluster}>
+                    <NavLink
+                      className={({ isActive }) =>
+                        `${styles.navLink} ${styles.servicesLink} ${
+                          isActive ? styles.navLinkActive : ""
+                        }`
+                      }
+                      to="/services"
+                      onClick={(event) => {
+                        if (!isDesktopNav) {
+                          event.preventDefault();
+                          setDropdownOpen(false);
+                          setServicesOpen((open) => !open);
+                          return;
+                        }
+                        closeNav();
+                        window.scrollTo(0, 0);
+                      }}
+                    >
+                      {t("nav.services")}
+                    </NavLink>
+                    <button
+                      type="button"
+                      className={styles.servicesToggle}
+                      aria-haspopup="true"
+                      aria-expanded={servicesOpen}
+                      aria-controls="services-mega-menu"
+                      aria-label={
+                        isRTL ? "قائمة الخدمات" : "Services menu"
+                      }
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        setServicesOpen((open) => !open);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "ArrowDown") {
+                          event.preventDefault();
+                          setDropdownOpen(false);
+                          setServicesOpen(true);
+                        }
+                      }}
+                    >
+                      <Icon
+                        name="chevronDown"
+                        className={styles.servicesChevron}
+                      />
+                    </button>
+                  </div>
+                  {!isDesktopNav && (
+                    <ServicesMegaMenu
+                      variant="mobile"
+                      open={servicesOpen}
+                      onNavigate={closeNav}
+                      panelRef={servicesPanelRef}
+                    />
+                  )}
                 </li>
                 <li className="nav-item">
                   {renderNavLink("/contact", t("nav.contact"))}
@@ -310,6 +484,7 @@ function Navbar() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
 

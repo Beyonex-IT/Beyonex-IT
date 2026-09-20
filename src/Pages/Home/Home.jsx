@@ -2,7 +2,8 @@ import { lazy, Suspense, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import HeroSection from '../../Components/HomePage/HeroSection/HeroSection'
-import OurService from '../../Components/Services/OurService/OurService'
+import HomeServices from '../../Components/HomePage/HomeServices/HomeServices'
+import HomePartnership from '../../Components/HomePage/HomePartnership/HomePartnership'
 import SectionLoader from '../../Components/Layout/SectionLoader/SectionLoader'
 import { usePageTitle } from '../../hooks/usePageTitle'
 import styles from './Home.module.css'
@@ -18,9 +19,9 @@ export default function Home() {
   usePageTitle(t('nav.home'))
 
   useEffect(() => {
-    if (location.hash !== '#services') return
+    if (location.hash !== '#services' && location.hash !== '#partnership') return
     const t = setTimeout(() => {
-      const el = document.getElementById('services')
+      const el = document.getElementById(location.hash.slice(1))
       el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 0)
     return () => clearTimeout(t)
@@ -32,7 +33,11 @@ export default function Home() {
         <HeroSection />
 
         <div className={styles.homeServices}>
-          <OurService limit={3} showViewMore variant="home" />
+          <HomeServices />
+        </div>
+
+        <div className={styles.homePartnership}>
+          <HomePartnership />
         </div>
 
         <Suspense fallback={<SectionLoader />}>

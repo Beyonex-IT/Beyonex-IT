@@ -7,6 +7,7 @@ import { useAboutData } from "../../../hooks/useAboutData";
 import { useIntersectionReveal } from "../../../hooks/useIntersectionReveal";
 import { getLocalizedOrRaw } from "../../../utils/i18nHelpers";
 import Icon from "../../Common/Icon.jsx";
+import EvolutionStageGlyph from "./EvolutionStageGlyph.jsx";
 import {
   getProfessionalJourneyDescription,
   getProfessionalMilestone,
@@ -162,7 +163,13 @@ export default function AboutStory() {
                     >
                       <div className={styles.evolutionNode} aria-hidden="true">
                         <span className={styles.evolutionNodeRing} />
-                        <span className={styles.evolutionNodeCore} />
+                        <span className={styles.evolutionNodeGlyph}>
+                          <EvolutionStageGlyph
+                            year={milestone.year}
+                            icon={iconKey}
+                            index={index}
+                          />
+                        </span>
                         <span className={styles.evolutionNodeIndex}>
                           {String(index + 1).padStart(2, "0")}
                         </span>

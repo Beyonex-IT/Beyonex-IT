@@ -25,11 +25,11 @@ store.dispatch(aboutApi.endpoints.getAbout.initiate(initialLang));
 
 if (typeof window !== "undefined" && "requestIdleCallback" in window) {
   window.requestIdleCallback(() => {
-    store.dispatch(servicesApi.endpoints.getServices.initiate(initialLang));
+    store.dispatch(servicesApi.endpoints.getServiceCatalog.initiate(initialLang));
     store.dispatch(partnersApi.endpoints.getPartners.initiate(initialLang));
   });
 } else {
-  store.dispatch(servicesApi.endpoints.getServices.initiate(initialLang));
+  store.dispatch(servicesApi.endpoints.getServiceCatalog.initiate(initialLang));
   store.dispatch(partnersApi.endpoints.getPartners.initiate(initialLang));
 }
 

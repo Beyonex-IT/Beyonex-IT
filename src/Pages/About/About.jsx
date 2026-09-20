@@ -5,13 +5,31 @@ import AboutStory from "../../Components/AboutPage/AboutStory/AboutStory";
 import AboutStats from "../../Components/AboutPage/AboutStats/AboutStats";
 import AboutValues from "../../Components/AboutPage/AboutValues/AboutValues";
 import AboutCTA from "../../Components/AboutPage/AboutCTA/AboutCTA";
+import HomePartnership from "../../Components/HomePage/HomePartnership/HomePartnership";
 import SectionLoader from "../../Components/Layout/SectionLoader/SectionLoader";
+import { useIntersectionReveal } from "../../hooks/useIntersectionReveal";
 import { useAboutTeam } from "../../hooks/useAboutTeam";
 import { useAboutData } from "../../hooks/useAboutData";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import styles from "./About.module.css";
 
 const Team = lazy(() => import("../../Components/AboutPage/Team/Team"));
+const SuccessPartners = lazy(() =>
+  import("../../Components/HomePage/SuccessPartners/SuccessPartners"),
+);
+
+function AboutPartnersBand() {
+  const { isVisible, sectionRef } = useIntersectionReveal({
+    threshold: 0.12,
+    once: true,
+  });
+
+  return (
+    <div ref={sectionRef} className={styles.aboutPartners}>
+      <SuccessPartners embedded variant="home" isVisible={isVisible} />
+    </div>
+  );
+}
 
 export default function About() {
   const { t } = useTranslation();
@@ -58,6 +76,14 @@ export default function About() {
             </Suspense>
           </div>
         )}
+
+        <div className={styles.aboutPartnership}>
+          <HomePartnership />
+        </div>
+
+        <Suspense fallback={<SectionLoader />}>
+          <AboutPartnersBand />
+        </Suspense>
 
         <div className={styles.aboutCta}>
           <AboutCTA />

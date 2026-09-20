@@ -184,7 +184,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header {
+  .header,
+  .homeLayout .homeIntro {
     opacity: 1;
     transform: none;
     transition: none;
@@ -204,19 +205,92 @@
 /* ══════════════════════════════════════════════════════════
    Home — professional feature cards
    ══════════════════════════════════════════════════════════ */
-.homeLayout .header {
-  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+.homeLayout .homeIntro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 46rem;
+  margin-inline: auto;
+  margin-bottom: clamp(2.6rem, 5vw, 3.75rem);
+  padding-inline: 0.4rem;
+  opacity: 0;
+  transform: translateY(18px);
 }
 
-.homeLayout .title {
-  color: var(--color-section-title);
+.homeLayout .homeIntroIn {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.homeLayout .homeKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.05rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-400) !important;
+}
+
+.homeLayout .homeKickerLine {
+  display: block;
+  width: 1.85rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+[dir="rtl"] .homeLayout .homeKicker {
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+
+.homeLayout .homeHeadline {
+  margin: 0;
+  max-width: 18em;
+  font-size: clamp(1.4rem, 3.2vw, 2.15rem) !important;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.22 !important;
+  text-wrap: balance;
+  color: var(--color-section-title) !important;
   text-shadow: none;
 }
 
-.homeLayout .subtitle {
-  color: var(--color-text-subtitle);
-  font-weight: 600;
-  line-height: 1.7;
+.homeLayout .homeAccent {
+  width: 2.75rem;
+  height: 3px;
+  margin-top: 1.15rem;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand-200), var(--brand-400));
+}
+
+.homeLayout .homeLede {
+  margin: 1.2rem 0 0;
+  max-width: 38rem;
+  font-size: 1.02rem !important;
+  font-weight: 400;
+  line-height: 1.9 !important;
+  text-wrap: pretty;
+  color: var(--color-text-muted) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeKicker {
+  color: var(--brand-200) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeHeadline {
+  color: var(--brand-50) !important;
+}
+
+:global(html[data-theme="dark"]) .homeLayout .homeLede {
+  color: #c5d6e4 !important;
 }
 
 .homeLayout .grid {

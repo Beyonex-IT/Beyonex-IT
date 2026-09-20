@@ -33,13 +33,117 @@
   z-index: 1;
 }
 
+.pageHeroInner {
+  display: flex;
+  justify-content: center;
+}
+
+.pageIntro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding-inline: 0.5rem;
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.pageIntroIn {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pageKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1.05rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-400);
+}
+
+.pageKickerLine {
+  display: block;
+  width: 1.85rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+:global([dir="rtl"]) .pageKicker {
+  letter-spacing: 0.14em;
+  text-transform: none;
+}
+
+.pageHeadline {
+  margin: 0;
+  max-width: 18em;
+  font-size: clamp(1.55rem, 3.4vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.28;
+  text-wrap: balance;
+  color: var(--color-section-title);
+}
+
+.pageAccent {
+  width: 2.75rem;
+  height: 3px;
+  margin-top: 1.15rem;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--brand-200), var(--brand-400));
+}
+
+.pageLede {
+  margin: 1.2rem 0 0;
+  max-width: 38rem;
+  font-size: 1.02rem;
+  font-weight: 400;
+  line-height: 1.9;
+  text-wrap: pretty;
+  color: var(--color-text-muted);
+}
+
+:global(html[data-theme="dark"]) .pageKicker {
+  color: var(--brand-200);
+}
+
+:global(html[data-theme="dark"]) .pageHeadline {
+  color: var(--brand-50);
+}
+
+:global(html[data-theme="dark"]) .pageLede {
+  color: #c5d6e4;
+}
+
+@media (max-width: 768px) {
+  .pageHeadline {
+    max-width: 16em;
+    font-size: clamp(1.35rem, 6.2vw, 1.85rem);
+  }
+
+  .pageLede {
+    font-size: 0.96rem;
+    line-height: 1.8;
+  }
+}
+
 .pageBody {
   position: relative;
   z-index: 1;
 }
 
 .pageHero + .pageBody {
-  padding-top: clamp(3.75rem, 7vw, 5.25rem);
+  padding-top: clamp(2.75rem, 5.5vw, 4rem);
 }
 
 /* ── Background (uses global site background) ── */
@@ -838,9 +942,13 @@
 @media (prefers-reduced-motion: reduce) {
   .bgStage,
   .serviceCard.slideUp,
-  .title {
+  .title,
+  .pageIntro,
+  .pageIntroIn {
     animation: none;
     transition: none;
+    opacity: 1;
+    transform: none;
   }
 
   .viewMoreBtn,

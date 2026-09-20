@@ -10,7 +10,7 @@ export default function Services() {
     <div className={styles.servicesPage}>
       <div className={styles.pageContent}>
         <div className={styles.servicesWrap}>
-          <OurService variant="home" />
+          <OurService />
         </div>
       </div>
     </div>
